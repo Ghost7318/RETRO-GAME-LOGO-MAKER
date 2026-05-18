@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RETRO GAME LOGO MAKER</title>
+    
+    <!-- Google Fontsから各種レトロフォントを読み込み -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=DotGothic16&family=Reggae+One&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <!-- PixelMplusフォントの追加読み込み -->
+    <link href="https://fonts.googleapis.com/css2?family=PixelMplus10:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #0c0c14;
+            color: #ffffff;
+            font-family: 'DotGothic16', sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #00ffff;
+            text-shadow: 3px 3px 0px #ff0055;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .controls {
+            background: #18182c;
+            border: 4px solid #3d3d6b;
+            padding: 15px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #00ffff;
+            font-size: 14px;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px;
+            background: #000;
+            border: 2px solid #555577;
+            color: #fff;
+            font-family: 'DotGothic16', sans-serif;
+            font-size: 16px;
+            box-sizing: border-box;
+            border-radius: 4px;
+        }
+        
+        select {
+            cursor: pointer;
+        }
+
+        .color-pickers {
+            display: flex;
+            gap: 20px;
+        }
+        .color-item {
+            flex: 1;
+        }
+        input[type="color"] {
+            width: 100%;
+            height: 40px;
+            background: none;
+            border: 2px solid #555577;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: #00ffff;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: #ff0055;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #00ffff;
+            color: #000;
+            font-weight: bold;
+            border: none;
+            font-family: 'DotGothic16', sans-serif;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #008888;
+            border-radius: 4px;
+        }
+
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .btn-download {
+            background: #ff0055;
+            color: white;
+            box-shadow: 0 4px 0 #990033;
+            margin-top: 15px;
+        }
+
+        .preview-area {
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        canvas {
+            max-width: 100%;
+            border: 4px dashed #555577;
+            background-image: linear-gradient(45deg, #111 25%, transparent 25%), linear-gradient(-45deg, #111 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #111 75%), linear-gradient(-45deg, transparent 75%, #111 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- サイト名を変更しました -->
+    <h1>RETRO GAME LOGO MAKER</h1>
+
+    <div class="controls">
+        <div class="form-group">
+            <label for="logoText">ロゴの文字</label>
+            <input type="text" id="logoText" placeholder="文字を入力" value="伝説の戦士">
+        </div>
+
+        <div class="form-group">
+            <label for="fontSelect">フォントの種類</label>
+            <select id="fontSelect">
+                <option value="'DotGothic16', sans-serif">王道ドット (DotGothic16)</option>
+                <option value="'PixelMplus10', sans-serif">携帯ゲーム風 (PixelMplus10)</option>
+                <option value="'Dela Gothic One', sans-serif">超極太タイトル風 (Dela Gothic)</option>
+                <option value="'Reggae One', sans-serif">セガ・レトロ風 (Reggae One)</option>
+            </select>
+        </div>
+
+        <div class="color-pickers">
+            <div class="form-group color-item">
+                <label for="textColor">文字の色</label>
+                <input type="color" id="textColor" value="#00ffff">
+            </div>
+            <div class="form-group color-item">
+                <label for="shadowColor">影の色</label>
+                <input type="color" id="shadowColor" value="#ff0055">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="textSize">文字の大きさ (<span id="sizeValue">80</span>px)</label>
+            <input type="range" id="textSize" min="40" max="150" value="80">
+        </div>
+
+        <div class="form-group">
+            <label class="checkbox-label">
+                <input type="checkbox" id="isTransparent" checked> 背景を透過する
+            </label>
+        </div>
+
+        <button class="btn" id="generateBtn">ロゴを更新</button>
+    </div>
+
+    <div class="preview-area">
+        <canvas id="logoCanvas" width="800" height="400"></canvas>
+        <button class="btn btn-download" id="downloadBtn">画像を保存する(PNG)</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('logoCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        const logoText = document.getElementById('logoText');
+        const fontSelect = document.getElementById('fontSelect');
+        const textColor = document.getElementById('textColor');
+        const shadowColor = document.getElementById('shadowColor');
+        const textSize = document.getElementById('textSize');
+        const sizeValue = document.getElementById('sizeValue');
+        const isTransparent = document.getElementById('isTransparent');
+        
+        const generateBtn = document.getElementById('generateBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        // フォントの読み込み完了を待ってから初期描画
+        document.fonts.ready.then(() => {
+            drawLogo();
+        });
+
+        function drawLogo() {
+            const text = logoText.value || 'GAME START';
+            const size = textSize.value;
+            const chosenFont = fontSelect.value;
+            sizeValue.textContent = size;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (!isTransparent.checked) {
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.strokeStyle = '#333333';
+                ctx.lineWidth = 4;
+                ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+            }
+
+            ctx.font = `bold ${size}px ${chosenFont}`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            // 1. 影の描画
+            ctx.fillStyle = shadowColor.value;
+            ctx.fillText(text, canvas.width / 2 + 8, canvas.height / 2 + 8);
+
+            // 2. メイン文字の描画
+            ctx.fillStyle = textColor.value;
+            ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+        }
+
+        // 変更をリアルタイムに検知して再描画
+        logoText.addEventListener('input', drawLogo);
+        fontSelect.addEventListener('change', drawLogo);
+        textColor.addEventListener('input', drawLogo);
+        shadowColor.addEventListener('input', drawLogo);
+        textSize.addEventListener('input', drawLogo);
+        isTransparent.addEventListener('change', drawLogo);
+        generateBtn.addEventListener('click', drawLogo);
+
+        downloadBtn.addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.download = 'retro_logo_multi.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    </script>
+</body>
+</html>
